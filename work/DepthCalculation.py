@@ -16,17 +16,8 @@ class DepthCalculation:
         self.img = img
 
     def calculate(self):
-        nbrMiddle = 0;
-        nbrDanger = 0;
-        result = np.where(self.img > 200);
-        print(np.size(result))
-        for valuePixel in np.nditer(self.img):
-            if valuePixel > self.MAX_MIDDLE:
-                nbrMiddle += 1
-            if valuePixel > self.MAX_DANGER:
-                nbrDanger += 1
-                # if nbrDanger > self.__getRatioPixel():
-                #     break
+        nbrDanger = (self.img[:,:] > 200).sum()
+        nbrMiddle = (self.img[:,:] > 150).sum()
 
         print(nbrDanger)
         if nbrDanger > self.__getRatioPixel():
