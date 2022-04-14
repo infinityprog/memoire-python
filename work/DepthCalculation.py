@@ -1,5 +1,6 @@
 import numpy as np
 import enum
+from pygame import mixer
 
 class Status(enum.Enum):
     OK = 'Pas de danger'
@@ -11,17 +12,20 @@ class DepthCalculation:
     MAX_DANGER = 200
     RATIO_PIXEL = 20
     status = ''
+    __sound = None
 
     def __init__(self, img):
         self.img = img
+        mixer.init()
+        self.__sound=mixer.Sound("beep.wav")
 
     def calculate(self):
         nbrDanger = (self.img[:,:] >= 200).sum()
         nbrMiddle = (self.img[:,:] >= 100).sum()
 
-        print(nbrDanger)
-        print(nbrMiddle)
-        print(np.max(self.img))
+        # print(nbrDanger)
+        # print(nbrMiddle)
+        # print(np.max(self.img))
         if nbrDanger > self.__getRatioPixel():
             self.status = Status.DANGER
         elif nbrMiddle > self.__getRatioPixel():
@@ -35,3 +39,10 @@ class DepthCalculation:
 
     def result(self):
         return self.status.name
+
+    def playSound(self):
+        if self.status == Status.WARNING:
+            self.__sound.play()
+        elif self.status == Status.DANGER:
+            self.__sound.play()
+            self.__sound.play()
