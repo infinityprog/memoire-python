@@ -4,7 +4,7 @@ import time
 from work.DepthCalculation import DepthCalculation, Status
 from work.DepthEstimation import depthEstimation
 from work.Yolo import findObject, Object, jsonToObject
-from work.util import crop
+from work.util import crop, VideoWriter
 from datetime import datetime
 import numpy as np
 from pygame import mixer
@@ -40,20 +40,30 @@ def depthImg(img):
 
     return cv2.resize(output, dim, interpolation=cv2.INTER_AREA)
 
-cap = cv2.VideoCapture('chaise2.mp4')
+cap = cv2.VideoCapture('test.mp4')
 seconds = 0.1
 fps = cap.get(cv2.CAP_PROP_FPS) # Gets the frames per second
 multiplier = fps * seconds
+
+# frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+# frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+# fps = int(cap.get(cv2.CAP_PROP_FPS))
+#
+# videoWriter = VideoWriter((frame_width,frame_height), fps)
 
 while(cap.isOpened()):
     ret, frame = cap.read()
     if not ret:
         break
+
+    print(frame.shape)
     frameId = int(round(cap.get(1)))
     # Avoir une moyenne de status pour ne pas avoir danger et juste après ok
     oldStatusList = []
-    if frameId % multiplier == 0:
+    if True:
         img = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        # output2 = depthEstimation(img)
+        # dImg = depthImg(output2)
 
         result = findObject(img)
         objects = jsonToObject(result)
@@ -66,7 +76,6 @@ while(cap.isOpened()):
             # print(object.confidence)
 
             output = depthEstimation(img)
-            # dImg = depthImg(output)
             output = crop(output, object)
             # print(output.shape)
             # # print(img.shape)
@@ -75,15 +84,18 @@ while(cap.isOpened()):
             statusOfObjectInImg.append(depthCalculation.status)
 
 
-        depthCalculation.playSound()
+        # depthCalculation.playSound()
+
         # playSound(statusOfObjectInImg, oldStatusList)
         cv2.putText(img,object.name + " : " + depthCalculation.result(), (10, 100), cv2.FONT_HERSHEY_SIMPLEX,1, 0, 3)
+        # videoWriter.write(img)
         cv2.imshow('frame',img)
         # time.sleep(1)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
 cap.release()
+# videoWriter.release()
 cv2.destroyAllWindows()
 
 

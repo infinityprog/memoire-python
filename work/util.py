@@ -1,4 +1,4 @@
-
+import cv2
 def crop(img, object):
     ylength = ((object.ymax - object.ymin) / 5)
     xlength = ((object.xmax - object.xmin) / 5)
@@ -9,3 +9,17 @@ def crop(img, object):
     # calculate all image
     return img[int(object.ymin):int(object.ymax), int(object.xmin):int(object.xmax)]
     # return img[ymin:ymax, xmin:xmax]
+
+
+class VideoWriter:
+    out = None
+    def __init__(self, frameSize, fps):
+        self.out = cv2.VideoWriter('output_video.mp4',cv2.VideoWriter_fourcc(*'DIVX'), fps, frameSize)
+
+    def write(self, img):
+        self.out.write(img)
+
+    def release(self):
+        self.out.release()
+
+
