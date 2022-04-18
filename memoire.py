@@ -43,6 +43,7 @@ def depthImg(img):
 cap = cv2.VideoCapture('test.mp4')
 seconds = 0.1
 fps = cap.get(cv2.CAP_PROP_FPS) # Gets the frames per second
+print('fps : ' + str(fps))
 multiplier = fps * seconds
 
 # frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
