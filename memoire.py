@@ -1,5 +1,6 @@
 import cv2
 import time
+import timeit
 
 from work.DepthCalculation import DepthCalculation, Status
 from work.DepthEstimation import depthEstimation
@@ -57,7 +58,7 @@ while(cap.isOpened()):
     if not ret:
         break
 
-    print(frame.shape)
+    # print(frame.shape)
     frameId = int(round(cap.get(1)))
     # Avoir une moyenne de status pour ne pas avoir danger et juste après ok
     oldStatusList = []
@@ -66,7 +67,11 @@ while(cap.isOpened()):
         # output2 = depthEstimation(img)
         # dImg = depthImg(output2)
 
+        starty = timeit.default_timer()
         result = findObject(img)
+        stopy = timeit.default_timer()
+        print(str((stopy - starty)*1000).replace('.', ','))
+        # print(str(stopy - starty) + 's yolo')
         objects = jsonToObject(result)
 
         # Créer un seul bip et prendre le max du status
@@ -76,7 +81,10 @@ while(cap.isOpened()):
             # print(object.name)
             # print(object.confidence)
 
+            start = timeit.default_timer()
             output = depthEstimation(img)
+            stop = timeit.default_timer()
+            # print(str(stop - start) + 's depth')
             output = crop(output, object)
             # print(output.shape)
             # # print(img.shape)

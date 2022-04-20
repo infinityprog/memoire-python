@@ -1,10 +1,10 @@
 import cv2
-# import numpy as np
+import numpy as np
 import torch
 
 # model_type = "DPT_Large"  # MiDaS v3 - Large     (highest accuracy, slowest inference speed)
-model_type = "DPT_Hybrid"   # MiDaS v3 - Hybrid    (medium accuracy, medium inference speed)
-# model_type = "MiDaS_small"  # MiDaS v2.1 - Small   (lowest accuracy, highest inference speed)
+# model_type = "DPT_Hybrid"   # MiDaS v3 - Hybrid    (medium accuracy, medium inference speed)
+model_type = "MiDaS_small"  # MiDaS v2.1 - Small   (lowest accuracy, highest inference speed)
 
 midas = torch.hub.load("intel-isl/MiDaS", model_type)
 
@@ -33,7 +33,7 @@ def depthEstimation(img):
             align_corners=False,
         ).squeeze()
 
-    return prediction.cpu().numpy()
-    # imgWithDeep = prediction.cpu().numpy()
-    # imgWithDeep = cv2.normalize(imgWithDeep, None, 0, 1, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_64F)
-    # return (imgWithDeep * 255).astype(np.uint8)
+    prediction.cpu().numpy()
+    imgWithDeep = prediction.cpu().numpy()
+    imgWithDeep = cv2.normalize(imgWithDeep, None, 0, 1, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_64F)
+    return (imgWithDeep * 255).astype(np.uint8)

@@ -31,8 +31,8 @@ data/images/*
 !data/hyps
 !data/scripts
 !data/images
-!data/images/zidane.jpg
-!data/images/bus.jpg
+!../../MiDaS/input/zidane.jpg
+!../../MiDaS/input/bus.jpg
 !data/*.sh
 
 results*.csv
