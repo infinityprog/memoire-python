@@ -2,6 +2,8 @@ import cv2
 import time
 import timeit
 
+from result.check import ajustTime
+from work.Compare import Compare
 from work.DepthCalculation import DepthCalculation, Status
 from work.DepthEstimation import depthEstimation
 from work.Yolo import findObject, Object, jsonToObject
@@ -46,13 +48,15 @@ seconds = 0.1
 fps = cap.get(cv2.CAP_PROP_FPS) # Gets the frames per second
 print('fps : ' + str(fps))
 multiplier = fps * seconds
+compare = Compare()
+compare.initFile('../result/actual.csv')
 
 # frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
 # frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 # fps = int(cap.get(cv2.CAP_PROP_FPS))
 #
 # videoWriter = VideoWriter((frame_width,frame_height), fps)
-
+time = None;
 while(cap.isOpened()):
     ret, frame = cap.read()
     if not ret:
@@ -96,6 +100,13 @@ while(cap.isOpened()):
         # depthCalculation.playSound()
 
         # playSound(statusOfObjectInImg, oldStatusList)
+        if time == None:
+            time = "00:00"
+        else:
+            time = ajustTime(time)
+
+        if frameId % fps == 0:
+            compare.addPrediction(time, depthCalculation.status)
         cv2.putText(img,object.name + " : " + depthCalculation.result(), (10, 100), cv2.FONT_HERSHEY_SIMPLEX,1, 0, 3)
         # videoWriter.write(img)
         cv2.imshow('frame',img)
