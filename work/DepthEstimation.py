@@ -1,12 +1,6 @@
 import cv2
-import torch
-import urllib.request
-import os
 import numpy as np
-
-os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
-
-import matplotlib.pyplot as plt
+import torch
 
 # model_type = "DPT_Large"  # MiDaS v3 - Large     (highest accuracy, slowest inference speed)
 # model_type = "DPT_Hybrid"   # MiDaS v3 - Hybrid    (medium accuracy, medium inference speed)
@@ -39,6 +33,7 @@ def depthEstimation(img):
             align_corners=False,
         ).squeeze()
 
+    prediction.cpu().numpy()
     imgWithDeep = prediction.cpu().numpy()
     imgWithDeep = cv2.normalize(imgWithDeep, None, 0, 1, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_64F)
     return (imgWithDeep * 255).astype(np.uint8)

@@ -3,9 +3,9 @@ import numpy as np
 import json
 
 # Model
-model = torch.hub.load('.', 'custom', path='yolov5hc.pt', source='local', force_reload=True)  # custom model
+# model = torch.hub.load('.', 'custom', path='yolov5hc.pt', source='local', force_reload=True)  # custom model
 # model = torch.hub.load('ultralytics/yolov5', 'custom', path='yolov5L.pt', force_reload=True)
-# model = torch.hub.load('ultralytics/yolov5', 'yolov5l')
+model = torch.hub.load('ultralytics/yolov5', 'yolov5l')
 
 def findObject(img):
     return model(img)

@@ -134,10 +134,10 @@ if __name__ == '__main__':
 
     imgs = [
         'data/images/zidane.jpg',  # filename
-        Path('data/images/zidane.jpg'),  # Path
+        Path('../../MiDaS/input/zidane.jpg'),  # Path
         'https://ultralytics.com/images/zidane.jpg',  # URI
-        cv2.imread('data/images/bus.jpg')[:, :, ::-1],  # OpenCV
-        Image.open('data/images/bus.jpg'),  # PIL
+        cv2.imread('../../MiDaS/input/bus.jpg')[:, :, ::-1],  # OpenCV
+        Image.open('../../MiDaS/input/bus.jpg'),  # PIL
         np.zeros((320, 640, 3))]  # numpy
 
     results = model(imgs, size=320)  # batched inference
