@@ -22,13 +22,13 @@ class Compare:
         actualReader = csv.reader(actualF, delimiter=';')
         expectedF = open(expected)
         expectedReader = csv.reader(expectedF, delimiter=';')
-        resultFile = open('../result/result.txt', "w")
+        resultFile = open('result/result.txt', "w")
+        listActualReader = list(actualReader)
 
-        for index, expectedRow in expectedReader:
-            actualRow = actualReader[index]
+        for index, expectedRow in enumerate(expectedReader, 0):
+            self.__constructTableClassification(listActualReader[index], expectedRow)
 
-            self.__constructTableClassification(actualRow, expectedRow)
-            self.__insertEvaluationMetrics(resultFile)
+        self.__insertEvaluationMetrics(resultFile)
 
 
 
@@ -47,36 +47,36 @@ class Compare:
                     self.fp = self.fp + 1
 
     def __insertEvaluationMetrics(self, resultFile: IO):
-        resultFile.write('TP : ' + str(self.tp))
-        resultFile.write('FP : ' + str(self.fp))
-        resultFile.write('TN : ' + str(self.tn))
-        resultFile.write('FN : ' + str(self.fn))
+        resultFile.write('TP : ' + str(self.tp) + '\n')
+        resultFile.write('FP : ' + str(self.fp) + '\n')
+        resultFile.write('TN : ' + str(self.tn) + '\n')
+        resultFile.write('FN : ' + str(self.fn) + '\n')
 
-        resultFile.write('')
-        resultFile.write('---------------------')
-        resultFile.write('')
+        resultFile.write('\n')
+        resultFile.write('---------------------\n')
+        resultFile.write('\n')
 
         p = self.tp + self.fn
         n = self.fp + self.tn
         tpr = self.tp / p
         fpr = self.fp / n
 
-        resultFile.write('P : ' + str(p))
-        resultFile.write('N : ' + str(n))
-        resultFile.write('TPR : ' + str(tpr))
-        resultFile.write('FPR : ' + str(fpr))
+        resultFile.write('P : ' + str(p) + '\n')
+        resultFile.write('N : ' + str(n) + '\n')
+        resultFile.write('TPR : ' + str(tpr) + '\n')
+        resultFile.write('FPR : ' + str(fpr) + '\n')
 
-        resultFile.write('')
-        resultFile.write('---------------------')
-        resultFile.write('')
+        resultFile.write('\n')
+        resultFile.write('---------------------\n')
+        resultFile.write('\n')
 
         recall = tpr
         precision = self.tp / (self.tp + self.fp)
         accuracy = (self.tp + self.tn) / (p + n)
 
-        resultFile.write('Recall : ' + str(recall))
-        resultFile.write('Precision : ' + str(precision))
-        resultFile.write('Accuracy : ' + str(accuracy))
+        resultFile.write('Recall : ' + str(recall) + '\n')
+        resultFile.write('Precision : ' + str(precision) + '\n')
+        resultFile.write('Accuracy : ' + str(accuracy) + '\n')
 
 
 
