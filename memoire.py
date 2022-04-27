@@ -74,7 +74,6 @@ while(cap.isOpened()):
         starty = timeit.default_timer()
         result = findObject(img)
         stopy = timeit.default_timer()
-        print(str((stopy - starty)*1000).replace('.', ','))
         # print(str(stopy - starty) + 's yolo')
         objects = jsonToObject(result)
 
@@ -88,6 +87,7 @@ while(cap.isOpened()):
             start = timeit.default_timer()
             output = depthEstimation(img)
             stop = timeit.default_timer()
+            print(str((stop - start)*1000).replace('.', ','))
             # print(str(stop - start) + 's depth')
             output = crop(output, object)
             # print(output.shape)
