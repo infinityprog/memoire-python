@@ -1,1 +1,1 @@
-yolov5s : 21.01s
+yolov5s : 21.01ms
