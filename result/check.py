@@ -10,30 +10,35 @@ def ajustTime(time):
     else:
         return time[0:3] + str(val)
 
-if len(sys.argv) != 2:
-    print('Only one arg : Path')
-    quit()
-
-path = sys.argv[1]
-f = open(path)
-myReader = csv.reader(f, delimiter=';')
-oldTime = None
-for row in myReader:
-    time = row[0]
-    value = row[1]
-
-    if oldTime is None:
-        if time != '00:00':
-            print('Actual time: ' + time + ', expected time : 00:00')
-            quit()
-        oldTime = '00:00'
-    else:
-        oldTime = ajustTime(oldTime)
-        if oldTime != time:
-            print('Actual time: ' + time + ', expected time : ' + oldTime)
-            quit()
-print('File OK')
 
 
 
 
+def main():
+    if len(sys.argv) != 2:
+        print('Only one arg : Path')
+        quit()
+
+    path = sys.argv[1]
+    f = open(path)
+    myReader = csv.reader(f, delimiter=';')
+    oldTime = None
+    for row in myReader:
+        time = row[0]
+        value = row[1]
+
+        if oldTime is None:
+            if time != '00:00':
+                print('Actual time: ' + time + ', expected time : 00:00')
+                quit()
+            oldTime = '00:00'
+        else:
+            oldTime = ajustTime(oldTime)
+            if oldTime != time:
+                print('Actual time: ' + time + ', expected time : ' + oldTime)
+                quit()
+    print('File OK')
+
+
+if __name__ == "__main__":
+    main()
