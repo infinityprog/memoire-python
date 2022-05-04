@@ -64,12 +64,15 @@ def main():
         result = yolo.findObject(img)
         objects = jsonToObject(result)
 
-        depthMapImg = depthEstimation(img)
-
         # Créer un seul bip et prendre le max du status
         statusOfObjectInImg = []
+        lock = False
         for obj in filter( lambda o: o['confidence'] > 0.5, objects):
             object = Object(**obj)
+
+            if not lock:
+                depthMapImg = depthEstimation(img)
+                lock = True
 
             output = crop(depthMapImg, object)
 
@@ -98,6 +101,7 @@ def main():
         # videoWriter.write(img)
         # cv2.putText(img, status, (10, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, 0, 3)
         # cv2.imshow('frame',img)
+        # cv2.imshow('depth',depthMapImg)
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
