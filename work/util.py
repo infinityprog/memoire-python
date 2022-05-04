@@ -2,7 +2,6 @@ import cv2
 
 from work.DepthCalculation import Status
 
-
 def crop(img, object):
     ylength = ((object.ymax - object.ymin) / 5)
     xlength = ((object.xmax - object.xmin) / 5)

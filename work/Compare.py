@@ -1,7 +1,10 @@
 from typing import IO
 import csv
+import sys
 
+from result.check import ajustTime
 from work.DepthCalculation import Status
+from work.util import most_frequent
 
 
 class Compare:
@@ -12,17 +15,29 @@ class Compare:
     tn = 0
 
     def initFile(self, filename: str):
-        self.file = open(filename, "w")
+        self.file = open(filename, "w+")
 
-    def addPrediction(self, time: str, status: Status):
-        self.file.write(time + ';' + status.name)
+    def addPrediction(self, time: str, status: str):
+        self.file.write(time + ';' + status + '\n')
 
-    def buildResult(self, actual, expected):
+    def writeComparaison(self, time, compareStatusList):
+        if time == None:
+            time = "00:00"
+        else:
+            time = ajustTime(time)
+
+        statusToCompare = most_frequent(compareStatusList)
+        sys.stdout.write('\r'+time)
+        self.addPrediction(time, statusToCompare)
+        return time
+        # print(statusToCompare)
+
+    def buildResult(self, actual, expected, pathResult):
         actualF = open(actual)
         actualReader = csv.reader(actualF, delimiter=';')
         expectedF = open(expected)
         expectedReader = csv.reader(expectedF, delimiter=';')
-        resultFile = open('result/result.txt', "w")
+        resultFile = open(pathResult, "w+")
         listActualReader = list(actualReader)
 
         for index, expectedRow in enumerate(expectedReader, 0):

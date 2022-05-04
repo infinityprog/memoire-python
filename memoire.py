@@ -1,16 +1,14 @@
 import cv2
-import time
-import timeit
+from pygame import mixer
+import sys
 
-# from result.check import ajustTime
-# from work.Compare import Compare
+from result.check import ajustTime
+from work.Compare import Compare
 from work.DepthCalculation import DepthCalculation, Status
 from work.DepthEstimation import depthEstimation
-from work.Yolo import findObject, Object, jsonToObject
-from work.util import crop, VideoWriter, most_frequent, findStatus, findStatusMin
-from datetime import datetime
-import numpy as np
-from pygame import mixer
+from work.Yolo import Object, jsonToObject, Yolo
+from work.env import repCompare
+from work.util import crop, most_frequent, findStatus, findStatusMin
 
 mixer.init()
 sound=mixer.Sound("beep.wav")
@@ -32,34 +30,38 @@ def playSound(statusList, oldStatusList):
         print(Status.OK)
         oldStatusList.append(Status.OK)
 
-cap = cv2.VideoCapture('test.mp4')
-seconds = 0.1
-fps = cap.get(cv2.CAP_PROP_FPS) # Gets the frames per second
-print('fps : ' + str(fps))
-multiplier = fps * seconds
-# compare = Compare()
-# compare.initFile('../result/actual.csv')
+def main():
+    yoloModelName = sys.argv[1] if len(sys.argv) > 1 else 'yolov5l'
+    yolo = Yolo(yoloModelName)
+    cap = cv2.VideoCapture('test.mp4')
+    seconds = 0.1
+    fps = cap.get(cv2.CAP_PROP_FPS) # Gets the frames per second
+    print('fps : ' + str(fps))
+    multiplier = fps * seconds
+    compare = Compare()
+    compare.initFile(repCompare(yoloModelName) + 'actual.csv')
 
-# frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-# frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-# fps = int(cap.get(cv2.CAP_PROP_FPS))
-#
-# videoWriter = VideoWriter((frame_width,frame_height), fps)
-statusList = []
-status = ''
-while(cap.isOpened()):
-    ret, frame = cap.read()
-    if not ret:
-        break
+    # frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    # frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    #
+    # videoWriter = VideoWriter((frame_width,frame_height), fps)
+    statusList = []
+    compareStatusList = []
+    status = ''
+    time = None
+    while(cap.isOpened()):
+        ret, frame = cap.read()
+        if not ret:
+            break
 
-    frameId = int(round(cap.get(1)))
-    # Avoir une moyenne de status pour ne pas avoir danger et juste après ok
-    if True:
+        frameId = int(round(cap.get(1)))
+        # Avoir une moyenne de status pour ne pas avoir danger et juste après ok
+
         img = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         # output2 = depthEstimation(img)
         # dImg = depthImg(output2)
 
-        result = findObject(img)
+        result = yolo.findObject(img)
         objects = jsonToObject(result)
 
         # Créer un seul bip et prendre le max du status
@@ -75,35 +77,38 @@ while(cap.isOpened()):
             statusOfObjectInImg.append(depthCalculation.status)
 
 
-        # depthCalculation.playSound()
-
         # playSound(statusOfObjectInImg, oldStatusList)
-        # Add comparaison in file
-        # if time == None:
-        #     time = "00:00"
-        # else:
-        #     time = ajustTime(time)
-        #
-        # if frameId % fps == 0:
-        #     compare.addPrediction(time, depthCalculation.status)
-        print(findStatus(statusOfObjectInImg))
+
+
         statusList.append(findStatus(statusOfObjectInImg))
-        if frameId % fps == 15:
+
+        # Choisi le status à afficher sur l'image toutes les 1/2 secs
+        if frameId % fps == 10:
             status = findStatusMin(statusList, 3).name if findStatusMin(statusList, 3) != None else ''
+            compareStatusList.append(status)
             statusList = []
 
-        cv2.putText(img, status, (10, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, 0, 3)
+        # Choisi le status qui va être comparé et écrire dans le fichier csv de comparaison
+        if frameId % fps == 0:
+            time = compare.writeComparaison(time, compareStatusList)
+            compareStatusList = []
 
         # Create video
         # videoWriter.write(img)
-        cv2.imshow('frame',img)
+        # cv2.putText(img, status, (10, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, 0, 3)
+        # cv2.imshow('frame',img)
 
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
 
-cap.release()
-# videoWriter.release()
-cv2.destroyAllWindows()
+    # Si il reste du temps ça écrit une dernière fois
+    if frameId % fps != 0:
+        compare.writeComparaison(time, compareStatusList)
+
+    cap.release()
+    # videoWriter.release()
+    cv2.destroyAllWindows()
 
 
-
+if __name__ == "__main__":
+    main()

@@ -4,4 +4,4 @@ from work.Compare import Compare
 
 compare = Compare()
 
-compare.buildResult(sys.argv[1], sys.argv[2])
+compare.buildResult(sys.argv[1], sys.argv[2], sys.argv[3])
