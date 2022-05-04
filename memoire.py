@@ -64,13 +64,14 @@ def main():
         result = yolo.findObject(img)
         objects = jsonToObject(result)
 
+        depthMapImg = depthEstimation(img)
+
         # Créer un seul bip et prendre le max du status
         statusOfObjectInImg = []
         for obj in filter( lambda o: o['confidence'] > 0.5, objects):
             object = Object(**obj)
 
-            output = depthEstimation(img)
-            output = crop(output, object)
+            output = crop(depthMapImg, object)
 
             depthCalculation = DepthCalculation(output)
             depthCalculation.calculate()
@@ -89,21 +90,21 @@ def main():
             statusList = []
 
         # Choisi le status qui va être comparé et écrire dans le fichier csv de comparaison
-        if frameId % fps == 0:
-            time = compare.writeComparaison(time, compareStatusList)
-            compareStatusList = []
+        # if frameId % fps == 0:
+        #     time = compare.writeComparaison(time, compareStatusList)
+        #     compareStatusList = []
 
         # Create video
         # videoWriter.write(img)
-        # cv2.putText(img, status, (10, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, 0, 3)
-        # cv2.imshow('frame',img)
+        cv2.putText(img, status, (10, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, 0, 3)
+        cv2.imshow('frame',img)
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
     # Si il reste du temps ça écrit une dernière fois
-    if frameId % fps != 0:
-        compare.writeComparaison(time, compareStatusList)
+    # if frameId % fps != 0:
+    #     compare.writeComparaison(time, compareStatusList)
 
     cap.release()
     # videoWriter.release()
