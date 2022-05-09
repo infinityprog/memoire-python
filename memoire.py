@@ -33,13 +33,13 @@ def playSound(statusList, oldStatusList):
 def main():
     yoloModelName = sys.argv[1] if len(sys.argv) > 1 else 'yolov5l'
     yolo = Yolo(yoloModelName)
-    cap = cv2.VideoCapture('test.mp4')
+    cap = cv2.VideoCapture('large.mp4')
     seconds = 0.1
     fps = cap.get(cv2.CAP_PROP_FPS) # Gets the frames per second
     print('fps : ' + str(fps))
     multiplier = fps * seconds
-    # compare = Compare()
-    # compare.initFile(repCompare(yoloModelName) + 'actual.csv')
+    compare = Compare()
+    compare.initFile(repCompare(yoloModelName) + 'actual.csv')
 
     # frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     # frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
@@ -93,9 +93,9 @@ def main():
             statusList = []
 
         # Choisi le status qui va être comparé et écrire dans le fichier csv de comparaison
-        # if frameId % fps == 0:
-        #     time = compare.writeComparaison(time, compareStatusList)
-        #     compareStatusList = []
+        if frameId % fps == 0:
+            time = compare.writeComparaison(time, compareStatusList)
+            compareStatusList = []
 
         # Create video
         # videoWriter.write(img)
@@ -107,8 +107,8 @@ def main():
             break
 
     # Si il reste du temps ça écrit une dernière fois
-    # if frameId % fps != 0:
-    #     compare.writeComparaison(time, compareStatusList)
+    if frameId % fps != 0:
+        compare.writeComparaison(time, compareStatusList)
 
     cap.release()
     # videoWriter.release()
