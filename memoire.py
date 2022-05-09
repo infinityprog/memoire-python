@@ -80,7 +80,6 @@ def main():
             depthCalculation.calculate()
             statusOfObjectInImg.append(depthCalculation.status)
 
-
         # playSound(statusOfObjectInImg, oldStatusList)
 
 
@@ -99,15 +98,17 @@ def main():
 
         # Create video
         # videoWriter.write(img)
-        cv2.putText(img, status, (10, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, 0, 3)
-        cv2.imshow('frame',img)
-        cv2.imshow('depth',depthMapImg)
+        # cv2.putText(img, status, (10, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, 0, 3)
+        # cv2.imshow('frame',img)
+        # cv2.imshow('depth',depthMapImg)
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
     # Si il reste du temps ça écrit une dernière fois
     if frameId % fps != 0:
+        if len(compareStatusList) == 0:
+            compareStatusList.append(Status.OK.name)
         compare.writeComparaison(time, compareStatusList)
 
     cap.release()
