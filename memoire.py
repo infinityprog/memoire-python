@@ -31,13 +31,13 @@ def playSound(statusList, oldStatusList):
         oldStatusList.append(Status.OK)
 
 def main():
-    yoloModelName = sys.argv[1] if len(sys.argv) > 1 else 'yolov5l'
+    yoloModelName = sys.argv[1] if len(sys.argv) > 1 else 'yolov5n'
     yolo = Yolo(yoloModelName)
-    cap = cv2.VideoCapture('large.mp4')
-    seconds = 0.1
+    cap = cv2.VideoCapture('test.mp4')
+    # seconds = 0.1
     fps = cap.get(cv2.CAP_PROP_FPS) # Gets the frames per second
     print('fps : ' + str(fps))
-    multiplier = fps * seconds
+    # multiplier = fps * seconds
     compare = Compare()
     compare.initFile(repCompare(yoloModelName) + 'actual.csv')
 
@@ -78,6 +78,7 @@ def main():
 
             depthCalculation = DepthCalculation(output)
             depthCalculation.calculate()
+
             statusOfObjectInImg.append(depthCalculation.status)
 
         # playSound(statusOfObjectInImg, oldStatusList)
