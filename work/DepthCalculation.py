@@ -10,7 +10,7 @@ class Status(enum.Enum):
 class DepthCalculation:
     MAX_MIDDLE = 150
     MAX_DANGER = 200
-    RATIO_PIXEL = 5
+    RATIO_PIXEL = 2.5
     status = ''
     __sound = None
 

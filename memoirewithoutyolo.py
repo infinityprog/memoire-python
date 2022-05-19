@@ -68,9 +68,11 @@ def main():
         statusOfObjectInImg = []
         depthMapImg = depthEstimation(img)
 
-        object = Object(0,0,656,368, 1, 'test')
+        object = Object(60,100,300,500, 1, 'test')
 
         output = crop(depthMapImg, object)
+
+        # cv2.imshow('crop', output)
 
         depthCalculation = DepthCalculation(output)
         depthCalculation.calculate()
@@ -83,7 +85,7 @@ def main():
         statusList.append(findStatus(statusOfObjectInImg))
 
         # Choisi le status à afficher sur l'image toutes les 1/2 secs
-        if frameId % fps == 10:
+        if frameId % fps == 5:
             status = findStatusMin(statusList, 1).name if findStatusMin(statusList, 1) != None else ''
             compareStatusList.append(status)
             statusList = []
