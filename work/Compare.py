@@ -4,7 +4,7 @@ import sys
 
 from result.check import ajustTime
 from work.DepthCalculation import Status
-from work.util import most_frequent
+from work.util import most_frequent, findStatus, findStatusMin
 
 
 class Compare:
@@ -26,7 +26,7 @@ class Compare:
         else:
             time = ajustTime(time)
 
-        statusToCompare = most_frequent(compareStatusList)
+        statusToCompare = findStatusMin(compareStatusList, 1).name
         sys.stdout.write('\r'+time)
         self.addPrediction(time, statusToCompare)
         return time

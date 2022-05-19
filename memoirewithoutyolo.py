@@ -33,7 +33,7 @@ def playSound(statusList, oldStatusList):
 def main():
     yoloModelName = sys.argv[1] if len(sys.argv) > 1 else 'yolov5n'
     yolo = Yolo(yoloModelName)
-    cap = cv2.VideoCapture('test.mp4')
+    cap = cv2.VideoCapture('large.mp4')
     # seconds = 0.1
     fps = cap.get(cv2.CAP_PROP_FPS) # Gets the frames per second
     print('fps : ' + str(fps))
@@ -85,8 +85,8 @@ def main():
         statusList.append(findStatus(statusOfObjectInImg))
 
         # Choisi le status à afficher sur l'image toutes les 1/2 secs
-        if frameId % fps == 5:
-            status = findStatusMin(statusList, 1).name if findStatusMin(statusList, 1) != None else ''
+        if frameId % 3 == 0:
+            status = findStatusMin(statusList, 3) if findStatusMin(statusList, 3) != None else ''
             compareStatusList.append(status)
             statusList = []
 
@@ -107,7 +107,7 @@ def main():
     # Si il reste du temps ça écrit une dernière fois
     if frameId % fps != 0:
         if len(compareStatusList) == 0:
-            compareStatusList.append(Status.OK.name)
+            compareStatusList.append(Status.OK)
         compare.writeComparaison(time, compareStatusList)
 
     cap.release()
