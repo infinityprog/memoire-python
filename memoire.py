@@ -1,14 +1,14 @@
 import cv2
-import time
-import timeit
+from pygame import mixer
+import sys
 
+from result.check import ajustTime
+from work.Compare import Compare
 from work.DepthCalculation import DepthCalculation, Status
 from work.DepthEstimation import depthEstimation
-from work.Yolo import findObject, Object, jsonToObject
-from work.util import crop, VideoWriter
-from datetime import datetime
-import numpy as np
-from pygame import mixer
+from work.Yolo import Object, jsonToObject, Yolo
+from work.env import repCompare
+from work.util import crop, most_frequent, findStatus, findStatusMin
 
 mixer.init()
 sound=mixer.Sound("beep.wav")
@@ -30,82 +30,94 @@ def playSound(statusList, oldStatusList):
         print(Status.OK)
         oldStatusList.append(Status.OK)
 
+def main():
+    yoloModelName = sys.argv[1] if len(sys.argv) > 1 else 'yolov5n'
+    yolo = Yolo(yoloModelName)
+    cap = cv2.VideoCapture('large.mp4')
+    # seconds = 0.1
+    fps = cap.get(cv2.CAP_PROP_FPS) # Gets the frames per second
+    print('fps : ' + str(fps))
+    # multiplier = fps * seconds
+    # compare = Compare()
+    # compare.initFile(repCompare(yoloModelName) + 'actual.csv')
 
-def depthImg(img):
-    output = cv2.applyColorMap(img, cv2.COLORMAP_MAGMA)
+    # frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    # frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    #
+    # videoWriter = VideoWriter((frame_width,frame_height), fps)
+    statusList = []
+    compareStatusList = []
+    status = ''
+    time = None
+    while(cap.isOpened()):
+        ret, frame = cap.read()
+        if not ret:
+            break
 
-    scale_percent = 40 # percent of original size
-    width = int(output.shape[1] * scale_percent / 100)
-    height = int(output.shape[0] * scale_percent / 100)
-    dim = (width, height)
+        frameId = int(round(cap.get(1)))
+        # Avoir une moyenne de status pour ne pas avoir danger et juste après ok
 
-    return cv2.resize(output, dim, interpolation=cv2.INTER_AREA)
-
-cap = cv2.VideoCapture('test.mp4')
-seconds = 0.1
-fps = cap.get(cv2.CAP_PROP_FPS) # Gets the frames per second
-print('fps : ' + str(fps))
-multiplier = fps * seconds
-
-# frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-# frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-# fps = int(cap.get(cv2.CAP_PROP_FPS))
-#
-# videoWriter = VideoWriter((frame_width,frame_height), fps)
-
-while(cap.isOpened()):
-    ret, frame = cap.read()
-    if not ret:
-        break
-
-    # print(frame.shape)
-    frameId = int(round(cap.get(1)))
-    # Avoir une moyenne de status pour ne pas avoir danger et juste après ok
-    oldStatusList = []
-    if True:
         img = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         # output2 = depthEstimation(img)
         # dImg = depthImg(output2)
 
-        starty = timeit.default_timer()
-        result = findObject(img)
-        stopy = timeit.default_timer()
-        print(str((stopy - starty)*1000).replace('.', ','))
-        # print(str(stopy - starty) + 's yolo')
+        result = yolo.findObject(img)
         objects = jsonToObject(result)
 
         # Créer un seul bip et prendre le max du status
         statusOfObjectInImg = []
-        for obj in filter( lambda o: o['confidence'] > 0.5, objects):
+        depthMapImg = None
+        lock = False
+        for obj in objects:
             object = Object(**obj)
-            # print(object.name)
-            # print(object.confidence)
 
-            start = timeit.default_timer()
-            output = depthEstimation(img)
-            stop = timeit.default_timer()
-            # print(str(stop - start) + 's depth')
-            output = crop(output, object)
-            # print(output.shape)
-            # # print(img.shape)
+            if not lock:
+                depthMapImg = depthEstimation(img)
+                lock = True
+
+            output = crop(depthMapImg, object)
+
             depthCalculation = DepthCalculation(output)
             depthCalculation.calculate()
+
             statusOfObjectInImg.append(depthCalculation.status)
 
-
-        # depthCalculation.playSound()
-
         # playSound(statusOfObjectInImg, oldStatusList)
-        cv2.putText(img,object.name + " : " + depthCalculation.result(), (10, 100), cv2.FONT_HERSHEY_SIMPLEX,1, 0, 3)
+
+
+        statusList.append(findStatus(statusOfObjectInImg))
+
+        # Choisi le status à afficher sur l'image toutes les 1/2 secs
+        if frameId % fps == 10:
+            status = findStatusMin(statusList, 3).name if findStatusMin(statusList, 3) != None else ''
+            compareStatusList.append(status)
+            statusList = []
+
+        # Choisi le status qui va être comparé et écrire dans le fichier csv de comparaison
+        # if frameId % fps == 0:
+        #     time = compare.writeComparaison(time, compareStatusList)
+        #     compareStatusList = []
+
+        # Create video
         # videoWriter.write(img)
+        cv2.putText(img, status, (10, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, 0, 3)
         cv2.imshow('frame',img)
-        # time.sleep(1)
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
+        if depthMapImg is not None:
+            cv2.imshow('depth', depthMapImg)
 
-cap.release()
-# videoWriter.release()
-cv2.destroyAllWindows()
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+
+    # Si il reste du temps ça écrit une dernière fois
+    # if frameId % fps != 0:
+    #     if len(compareStatusList) == 0:
+    #         compareStatusList.append(Status.OK.name)
+    #     compare.writeComparaison(time, compareStatusList)
+
+    cap.release()
+    # videoWriter.release()
+    cv2.destroyAllWindows()
 
 
-
+if __name__ == "__main__":
+    main()

@@ -4,7 +4,7 @@ import timeit
 
 from work.DepthEstimation import depthEstimation
 
-img = cv2.imread('../../MiDaS/yolo_compare.jpg')
+img = cv2.imread('good.jpg')
 img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
 start = timeit.default_timer()
