@@ -34,7 +34,7 @@ def main():
     yoloModelName = sys.argv[1] if len(sys.argv) > 1 else 'yolov5n'
     isCompare = sys.argv[2] if len(sys.argv) > 1 else False
     yolo = Yolo(yoloModelName)
-    cap = cv2.VideoCapture('large.mp4')
+    cap = cv2.VideoCapture('test.mp4')
     # seconds = 0.1
     fps = cap.get(cv2.CAP_PROP_FPS) # Gets the frames per second
     print('fps : ' + str(fps))
@@ -79,7 +79,7 @@ def main():
 
             output = crop(depthMapImg, object)
 
-            depthCalculation = DepthCalculation(output)
+            depthCalculation = DepthCalculation(output, 4)
             depthCalculation.calculate()
 
             statusOfObjectInImg.append(depthCalculation.status)
@@ -90,14 +90,14 @@ def main():
         statusList.append(findStatus(statusOfObjectInImg))
 
         # Choisi le status à afficher sur l'image toutes les 1/2 secs
-        if frameId % fps == 10:
+        if frameId % 5 == 0:
             status = findStatusMin(statusList, 3) if findStatusMin(statusList, 3) != None else Status.OK
             compareStatusList.append(status)
             statusList = []
 
         # Choisi le status qui va être comparé et écrire dans le fichier csv de comparaison
         if isCompare and frameId % fps == 0:
-            time = compare.writeComparaison(time, findStatusMin(compareStatusList, 3).name)
+            time = compare.writeComparaison(time, findStatusMin(compareStatusList, 1).name)
             compareStatusList = []
 
         # Create video
@@ -115,7 +115,7 @@ def main():
     if isCompare and frameId % fps != 0:
         if len(compareStatusList) == 0:
             compareStatusList.append(Status.OK.name)
-        compare.writeComparaison(time, compareStatusList)
+        compare.writeComparaison(time, findStatusMin(compareStatusList, 1).name)
 
     cap.release()
     # videoWriter.release()
