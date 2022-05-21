@@ -20,15 +20,14 @@ class Compare:
     def addPrediction(self, time: str, status: str):
         self.file.write(time + ';' + status + '\n')
 
-    def writeComparaison(self, time, compareStatusList):
+    def writeComparaison(self, time, status: str):
         if time == None:
             time = "00:00"
         else:
             time = ajustTime(time)
 
-        statusToCompare = findStatusMin(compareStatusList, 1).name
         sys.stdout.write('\r'+time)
-        self.addPrediction(time, statusToCompare)
+        self.addPrediction(time, status)
         return time
         # print(statusToCompare)
 
