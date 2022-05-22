@@ -7,7 +7,7 @@ from work.env import repCompare
 for model in ['yolov5n', 'yolov5s', 'yolov5m', 'yolov5l']:
 
     start = timeit.default_timer()
-    os.system('python memoire.py ' + model)
+    os.system('python memoire.py '+ model + ' True')
     stop = timeit.default_timer()
 
     f = open(repCompare(model) + 'time.txt', 'w+')

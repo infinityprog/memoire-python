@@ -4,7 +4,7 @@ import sys
 
 from result.check import ajustTime
 from work.DepthCalculation import Status
-from work.util import most_frequent
+from work.util import most_frequent, findStatus, findStatusMin
 
 
 class Compare:
@@ -20,15 +20,14 @@ class Compare:
     def addPrediction(self, time: str, status: str):
         self.file.write(time + ';' + status + '\n')
 
-    def writeComparaison(self, time, compareStatusList):
+    def writeComparaison(self, time, status: str):
         if time == None:
             time = "00:00"
         else:
             time = ajustTime(time)
 
-        statusToCompare = most_frequent(compareStatusList)
         sys.stdout.write('\r'+time)
-        self.addPrediction(time, statusToCompare)
+        self.addPrediction(time, status)
         return time
         # print(statusToCompare)
 
