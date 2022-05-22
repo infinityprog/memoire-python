@@ -31,10 +31,10 @@ def playSound(statusList, oldStatusList):
         oldStatusList.append(Status.OK)
 
 def main():
-    yoloModelName = sys.argv[1] if len(sys.argv) > 1 else 'yolov5n'
+    yoloModelName = sys.argv[1] if len(sys.argv) > 1 else 'yolov5m'
     isCompare = sys.argv[2] if len(sys.argv) > 1 else False
     yolo = Yolo(yoloModelName)
-    cap = cv2.VideoCapture('large.mp4')
+    cap = cv2.VideoCapture('chaise2.mp4')
     # seconds = 0.1
     fps = cap.get(cv2.CAP_PROP_FPS) # Gets the frames per second
     print('fps : ' + str(fps))
@@ -49,7 +49,7 @@ def main():
     # videoWriter = VideoWriter((frame_width,frame_height), fps)
     statusList = []
     compareStatusList = []
-    status = ''
+    status = Status.OK
     time = None
     while(cap.isOpened()):
         ret, frame = cap.read()
@@ -103,7 +103,7 @@ def main():
         # Create video
         # videoWriter.write(img)
         if not isCompare:
-            cv2.putText(img, status, (10, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, 0, 3)
+            cv2.putText(img, status.name, (10, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, 0, 3)
             cv2.imshow('frame',img)
             if depthMapImg is not None:
                 cv2.imshow('depth', depthMapImg)

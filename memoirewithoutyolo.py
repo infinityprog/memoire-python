@@ -11,7 +11,7 @@ from work.env import repCompare
 from work.util import crop, most_frequent, findStatus, findStatusMin
 
 def main():
-    cap = cv2.VideoCapture('test.mp4')
+    cap = cv2.VideoCapture('chaise2.mp4')
     isCompare = sys.argv[1] if len(sys.argv) > 1 else False
     fps = cap.get(cv2.CAP_PROP_FPS) # Gets the frames per second
     frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
