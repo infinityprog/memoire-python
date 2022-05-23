@@ -4,10 +4,10 @@ import datetime
 
 from work.env import repCompare
 
-for model in ['yolov5n', 'yolov5s', 'yolov5m', 'yolov5l']:
+for model in ['depthmap']:
 
     start = timeit.default_timer()
-    os.system('python memoire.py '+ model + ' True')
+    os.system('python memoirewithoutyolo.py True')
     stop = timeit.default_timer()
 
     f = open(repCompare(model) + 'time.txt', 'w+')

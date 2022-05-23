@@ -11,7 +11,7 @@ from work.env import repCompare
 from work.util import crop, most_frequent, findStatus, findStatusMin
 
 def main():
-    cap = cv2.VideoCapture('chaise2.mp4')
+    cap = cv2.VideoCapture('large.mp4')
     isCompare = sys.argv[1] if len(sys.argv) > 1 else False
     fps = cap.get(cv2.CAP_PROP_FPS) # Gets the frames per second
     frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
@@ -32,7 +32,6 @@ def main():
 
         frameId = int(round(cap.get(1)))
         # Avoir une moyenne de status pour ne pas avoir danger et juste après ok
-
         img = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
         # Créer un seul bip et prendre le max du status
