@@ -8,7 +8,8 @@ from work.DepthCalculation import DepthCalculation, Status
 from work.DepthEstimation import depthEstimation
 from work.Yolo import Object, jsonToObject, Yolo
 from work.env import repCompare
-from work.util import crop, most_frequent, findStatus, findStatusMin
+from work.util import crop, most_frequent, findStatus, findStatusMin, drawBoundingBox
+
 
 def main():
     cap = cv2.VideoCapture('large.mp4')
@@ -38,6 +39,7 @@ def main():
         depthMapImg = depthEstimation(img)
         object = Object(60,100,300, 500, 1, 'test')
         output = crop(depthMapImg, object)
+        img = drawBoundingBox(img, "Zone de détection", object)
         # cv2.imshow('crop', output)
         depthCalculation = DepthCalculation(output)
         depthCalculation.calculate()

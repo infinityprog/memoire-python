@@ -5,6 +5,15 @@ from work.DepthCalculation import Status
 def crop(img, object):
     return img[int(object.ymin):int(object.ymax), int(object.xmin):int(object.xmax)]
 
+def drawBoundingBox(img, label, object):
+    start_point = (int(object.xmin), int(object.ymin))
+    end_point = (int(object.xmax), int(object.ymax))
+    color = (0, 0, 255)
+    img = cv2.rectangle(img, start_point, end_point, color, 2)
+    img = cv2.rectangle(img, (int(object.xmin), int(object.ymin) - 20 ), (int(object.xmax), int(object.ymin)), color, -1)
+    return cv2.putText(img, label, (int(object.xmin), int(object.ymin) - 5) ,cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255,255,255), 1)
+
+
 def most_frequent(List):
     if len(List) == 0:
         return None

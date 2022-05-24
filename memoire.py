@@ -8,7 +8,7 @@ from work.DepthCalculation import DepthCalculation, Status
 from work.DepthEstimation import depthEstimation
 from work.Yolo import Object, jsonToObject, Yolo
 from work.env import repCompare
-from work.util import crop, most_frequent, findStatus, findStatusMin
+from work.util import crop, most_frequent, findStatus, findStatusMin, drawBoundingBox
 
 mixer.init()
 sound=mixer.Sound("beep.wav")
@@ -34,7 +34,7 @@ def main():
     yoloModelName = sys.argv[1] if len(sys.argv) > 1 else 'yolov5m'
     isCompare = sys.argv[2] if len(sys.argv) > 1 else False
     yolo = Yolo(yoloModelName)
-    cap = cv2.VideoCapture('large.mp4')
+    cap = cv2.VideoCapture('test.mp4')
     # seconds = 0.1
     fps = cap.get(cv2.CAP_PROP_FPS) # Gets the frames per second
     print('fps : ' + str(fps))
@@ -83,8 +83,7 @@ def main():
             depthCalculation.calculate()
 
             if depthCalculation.status == Status.WARNING or depthCalculation.status == Status.DANGER:
-                print(object.name)
-                print(object.confidence)
+                img = drawBoundingBox(img, object.name + " : " + str(object.confidence), object)
 
             statusOfObjectInImg.append(depthCalculation.status)
 
