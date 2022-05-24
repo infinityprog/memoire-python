@@ -4,10 +4,10 @@ import datetime
 
 from work.env import repCompare
 
-for model in ['depthmap']:
+for model in ['hybride']:
 
     start = timeit.default_timer()
-    os.system('python memoirewithoutyolo.py True')
+    os.system('python hybride.py yolov5m True')
     stop = timeit.default_timer()
 
     f = open(repCompare(model) + 'time.txt', 'w+')

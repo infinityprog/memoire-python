@@ -24,7 +24,7 @@ class DepthCalculation:
 
     def calculate(self):
         nbrDanger = (self.img[:, :] >= 200).sum()
-        nbrMiddle = (self.img[:, :] >= 100).sum()
+        nbrMiddle = (self.img[:, :] >= 130).sum()
 
         if nbrDanger > self.__getRatioPixel():
             self.status = Status.DANGER
