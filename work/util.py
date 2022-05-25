@@ -5,6 +5,9 @@ from work.DepthCalculation import Status
 def crop(img, object):
     return img[int(object.ymin):int(object.ymax), int(object.xmin):int(object.xmax)]
 
+def getDistance(relativeDistance):
+    return 0.0057 * (relativeDistance * relativeDistance) - 3.7758 * relativeDistance + 671.98
+
 def drawBoundingBox(img, label, object):
     start_point = (int(object.xmin), int(object.ymin))
     end_point = (int(object.xmax), int(object.ymax))
