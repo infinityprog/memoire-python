@@ -7,6 +7,7 @@ import torch
 model_type = "MiDaS_small"  # MiDaS v2.1 - Small   (lowest accuracy, highest inference speed)
 
 midas = torch.hub.load("intel-isl/MiDaS", model_type)
+# torch.save(midas, 'models/midasSmall.pt')
 
 device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
 midas.to(device)
