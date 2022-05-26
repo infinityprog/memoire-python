@@ -23,6 +23,14 @@ else:
 
 
 def depthEstimation(img):
+    imgWithDeep = depthEstimationPur(img)
+
+    # print(np.amax(prediction.cpu().numpy()))
+    # print(np.amin(prediction.cpu().numpy()))
+    imgWithDeep = cv2.normalize(imgWithDeep, None, 0, 1, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_64F)
+    return (imgWithDeep * 255).astype(np.uint8)
+
+def depthEstimationPur(img):
     input_batch = transform(img).to(device)
 
     with torch.no_grad():
@@ -36,9 +44,8 @@ def depthEstimation(img):
         ).squeeze()
 
     # return prediction.cpu().numpy()
-    imgWithDeep = prediction.cpu().numpy()
+    return prediction.cpu().numpy()
 
-    # print(np.amax(prediction.cpu().numpy()))
-    # print(np.amin(prediction.cpu().numpy()))
-    imgWithDeep = cv2.normalize(imgWithDeep, None, 0, 1, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_64F)
+def normalizeDepthMap(depthmap):
+    imgWithDeep = cv2.normalize(depthmap, None, 0, 1, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_64F)
     return (imgWithDeep * 255).astype(np.uint8)

@@ -1,5 +1,7 @@
-import numpy as np
 import enum
+import math
+
+import cv2
 from pygame import mixer
 
 
@@ -8,6 +10,9 @@ class Status(enum.Enum):
     WARNING = 'Un objet est pas loin'
     DANGER = 'Attention vous etes trop proche'
 
+def getDistance(relativeDistance):
+    relativeDistance = int(relativeDistance)
+    return 2*math.pow(10,6) * math.pow(relativeDistance,-1.767)
 
 class DepthCalculation:
     MAX_MIDDLE = 150
@@ -29,6 +34,24 @@ class DepthCalculation:
         if nbrDanger > self.__getRatioPixel():
             self.status = Status.DANGER
         elif nbrMiddle > self.__getRatioPixel():
+            self.status = Status.WARNING
+        else:
+            self.status = Status.OK
+
+    def calculatePur(self):
+        height, width = self.img.shape
+        distanceRelative = self.img[int(height / 2), int(width / 2)]
+
+        print(distanceRelative)
+        if distanceRelative < 1:
+            self.status = Status.OK
+            return
+
+        distance = int(getDistance(distanceRelative))
+
+        if 50 > distance:
+            self.status = Status.DANGER
+        elif 100 > distance:
             self.status = Status.WARNING
         else:
             self.status = Status.OK
