@@ -12,7 +12,9 @@ class Status(enum.Enum):
 
 def getDistance(relativeDistance):
     relativeDistance = int(relativeDistance)
-    return 2*math.pow(10,6) * math.pow(relativeDistance,-1.767)
+    # return 49975 * math.pow(relativeDistance,-1.118)
+    # return -0.2639*relativeDistance+ 223.01
+    return 0.0003 * (relativeDistance**2) - 0.5353 * relativeDistance + 272.26
 
 class DepthCalculation:
     MAX_MIDDLE = 150
@@ -42,7 +44,7 @@ class DepthCalculation:
         height, width = self.img.shape
         distanceRelative = self.img[int(height / 2), int(width / 2)]
 
-        print(distanceRelative)
+        # print(distanceRelative)
         if distanceRelative < 1:
             self.status = Status.OK
             return

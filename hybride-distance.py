@@ -60,9 +60,8 @@ def main():
                 height, width = output.shape
                 distanceRelative = output[int(height / 2), int(width / 2)]
                 cv2.circle(img, (int(object.xmin + (width / 2)), int(object.ymin + (height / 2))), 5, (0,0,255), -1)
-                cv2.circle(depthMapImg, (int(object.xmin + (width / 2)), int(object.ymin + (height / 2))), 5, (0,0,255), -1)
 
-                distance = 1.3*int(getDistance(distanceRelative))
+                distance = int(getDistance(distanceRelative))
                 img = drawBoundingBox(img, object.name + " : " + str(distance) + 'cm', object)
 
             statusOfObjectInImg.append(depthCalculation.status)
