@@ -63,7 +63,7 @@ def findStatusMin(list: list, num: int):
 class VideoWriter:
     out = None
     def __init__(self, frameSize, fps):
-        self.out = cv2.VideoWriter('hybride-distance.mp4',cv2.VideoWriter_fourcc(*'DIVX'), fps, frameSize)
+        self.out = cv2.VideoWriter('hybride-distance.mp4',cv2.VideoWriter_fourcc(*'mp4v'), fps, frameSize)
 
     def write(self, img):
         self.out.write(img)
