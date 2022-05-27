@@ -30,10 +30,10 @@ def main():
     if isCompare:
         compare.initFile(repCompare('hybride') + 'actual.csv')
 
-    frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-    frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-
-    videoWriter = VideoWriter((frame_width * 2 ,frame_height), fps)
+    # frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    # frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    #
+    # videoWriter = VideoWriter((frame_width * 2 ,frame_height), fps)
     statusList = []
     status = Status.OK
     time = None
@@ -96,9 +96,8 @@ def main():
         if not isCompare:
             cv2.putText(img, status.name, (10, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, 0, 3)
             cv2.imshow('frame',img)
-            videoWriter.write(np.concatenate((cv2.cvtColor(depthMapImg,cv2.COLOR_GRAY2RGB), img), axis=1))
-            if depthMapImg is not None:
-                cv2.imshow('depth', depthMapImg)
+            # videoWriter.write(np.concatenate((cv2.cvtColor(depthMapImg,cv2.COLOR_GRAY2RGB), img), axis=1))
+            cv2.imshow('depth', depthMapImg)
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
@@ -110,7 +109,7 @@ def main():
         compare.writeComparaison(time, findStatusMin(statusList, 7).name)
 
     cap.release()
-    videoWriter.release()
+    # videoWriter.release()
     cv2.destroyAllWindows()
 
 
