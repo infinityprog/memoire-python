@@ -14,4 +14,4 @@ for model in ['hybride']:
     f.write('Time: ' + str(datetime.timedelta(seconds=(stop - start))))
     f.close()
 
-    os.system('python buildResult.py ' + repCompare(model) + 'actual.csv result/expected-large.csv ' + repCompare(model) + 'result.txt')
+    os.system('python buildResult.py ' + repCompare(model) + 'actual.csv result/expected-etroit.csv ' + repCompare(model) + 'result.txt')

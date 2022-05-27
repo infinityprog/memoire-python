@@ -1,13 +1,15 @@
 import cv2
 import sys
 
+import numpy as np
+
 from result.check import ajustTime
 from work.Compare import Compare
 from work.DepthCalculation import DepthCalculation, Status
 from work.DepthEstimation import depthEstimation, depthEstimationPur, normalizeDepthMap
 from work.Yolo import Object, jsonToObject, Yolo
 from work.env import repCompare
-from work.util import crop, most_frequent, findStatus, findStatusMin, drawBoundingBox, getDistance
+from work.util import crop, most_frequent, findStatus, findStatusMin, drawBoundingBox, getDistance, VideoWriter
 
 
 def calculateDistanceDepthMap(depthMapImg) -> Status:
@@ -28,6 +30,10 @@ def main():
     if isCompare:
         compare.initFile(repCompare('hybride') + 'actual.csv')
 
+    frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+
+    videoWriter = VideoWriter((frame_width * 2 ,frame_height), fps)
     statusList = []
     status = Status.OK
     time = None
@@ -87,10 +93,10 @@ def main():
             statusList = []
 
         # Create video
-        # videoWriter.write(img)
         if not isCompare:
             cv2.putText(img, status.name, (10, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, 0, 3)
             cv2.imshow('frame',img)
+            videoWriter.write(np.concatenate((cv2.cvtColor(depthMapImg,cv2.COLOR_GRAY2RGB), img), axis=1))
             if depthMapImg is not None:
                 cv2.imshow('depth', depthMapImg)
 
@@ -104,7 +110,7 @@ def main():
         compare.writeComparaison(time, findStatusMin(statusList, 7).name)
 
     cap.release()
-    # videoWriter.release()
+    videoWriter.release()
     cv2.destroyAllWindows()
 
 

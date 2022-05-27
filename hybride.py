@@ -20,7 +20,7 @@ def main():
     yoloModelName = sys.argv[1] if len(sys.argv) > 1 else 'yolov5m'
     isCompare = sys.argv[2] if len(sys.argv) > 1 else False
     yolo = Yolo(yoloModelName)
-    cap = cv2.VideoCapture('large.mp4')
+    cap = cv2.VideoCapture('test.mp4')
     fps = cap.get(cv2.CAP_PROP_FPS) # Gets the frames per second
     print('fps : ' + str(fps))
     compare = Compare()
@@ -54,8 +54,8 @@ def main():
             depthCalculation = DepthCalculation(output, 4)
             depthCalculation.calculate()
 
-            if depthCalculation.status == Status.WARNING or depthCalculation.status == Status.DANGER:
-                img = drawBoundingBox(img, object.name + " : " + str(object.confidence), object)
+            # if depthCalculation.status == Status.WARNING or depthCalculation.status == Status.DANGER:
+            #     img = drawBoundingBox(img, object.name + " : " + str(object.confidence), object)
 
             statusOfObjectInImg.append(depthCalculation.status)
 
