@@ -9,7 +9,7 @@ def crop(img, object):
 
 def getDistance(relativeDistance):
     relativeDistance = int(relativeDistance)
-    # return 2*math.pow(10,6) * math.pow(relativeDistance,-1.767)
+    # return 785680 * math.pow(relativeDistance,-1.63)
     # return -0.2639*relativeDistance+ 223.01
     return 0.0003 * (relativeDistance**2) - 0.5353 * relativeDistance + 272.26
 

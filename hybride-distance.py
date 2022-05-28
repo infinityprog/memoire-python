@@ -28,7 +28,7 @@ def main():
     print('fps : ' + str(fps))
     compare = Compare()
     if isCompare:
-        compare.initFile(repCompare('hybride') + 'actual.csv')
+        compare.initFile(repCompare('hybride-distance') + 'actual.csv')
 
     # frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     # frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
