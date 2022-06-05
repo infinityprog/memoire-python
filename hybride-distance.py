@@ -95,9 +95,8 @@ def main():
         # Create video
         if not isCompare:
             cv2.putText(img, status.name, (10, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, 0, 3)
-            cv2.imshow('frame',img)
             # videoWriter.write(np.concatenate((cv2.cvtColor(depthMapImg,cv2.COLOR_GRAY2RGB), img), axis=1))
-            cv2.imshow('depth', depthMapImg)
+            cv2.imshow('2', np.concatenate((cv2.cvtColor(depthMapImg,cv2.COLOR_GRAY2RGB), img), axis=1))
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break

@@ -13,7 +13,7 @@ class Status(enum.Enum):
 def getDistance(relativeDistance):
     relativeDistance = int(relativeDistance)
     # return 785680 * math.pow(relativeDistance,-1.63)
-    # return -0.2639*relativeDistance+ 223.01
+    # return math.pow(0.00009*relativeDistance - 0.0139, -1)
     return 0.0003 * (relativeDistance**2) - 0.5353 * relativeDistance + 272.26
 
 class DepthCalculation:
